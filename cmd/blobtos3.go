@@ -32,7 +32,7 @@ var blobtos3 = &cobra.Command{
 				filename := strings.Split(destinourl[0], "/")
 				err = os.MkdirAll(strings.Join(filename[:len(filename)-1], "/"), 0755)
 				if err != nil {
-					log.Fatalln()
+					log.Fatalln(err)
 				}
 				data := selective.LocalStore(data.Url)
 				f, err := os.Create(strings.Join(filename[:len(filename)-1], "/") + "/" + filename[len(filename)-1])
@@ -43,6 +43,7 @@ var blobtos3 = &cobra.Command{
 				f.Write(data)
 			}
 			log.Println("Tarea completa")
+			time.Sleep(time.Minute * 2)
 			os.Exit(1)
 		}
 		for _, data := range models {
