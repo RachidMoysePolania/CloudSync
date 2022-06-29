@@ -21,7 +21,7 @@ type Model struct {
 	Destino string `csv:"Destino"`
 }
 
-func BlobtoS3(filename string, evidencia string) *manager.UploadOutput {
+func BlobtoS3(filename string, evidencia string, bucketname string) *manager.UploadOutput {
 	resp, err := http.Get(evidencia)
 	if err != nil {
 		log.Fatalln(err)
@@ -40,7 +40,7 @@ func BlobtoS3(filename string, evidencia string) *manager.UploadOutput {
 	client := s3.NewFromConfig(cfg)
 	uploader := manager.NewUploader(client)
 	result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
-		Bucket: aws.String("pruebas-devops-2022"),
+		Bucket: aws.String(bucketname), //"pruebas-devops-2022"
 		Key:    aws.String(filename),
 		Body:   strings.NewReader(string(data)),
 	})

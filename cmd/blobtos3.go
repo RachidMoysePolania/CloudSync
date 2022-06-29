@@ -8,12 +8,14 @@ import (
 	"time"
 )
 
+var pathfile string
+var buckname string
 var blobtos3 = &cobra.Command{
 	Use:   "aztos3",
 	Short: "command to transmit data from blobstorage to s3 bucket",
-	Long:  "si",
+	Long:  "upload recursively data from blobstorage in azure to s3 bucket",
 	Run: func(cmd *cobra.Command, args []string) {
-		pathfile := "/Users/r4st4m4n/Downloads/2022 Abril - Evidencias TEC.csv"
+		globalstart := time.Now()
 		models, err := selective.ReadCSV(pathfile)
 		if err != nil {
 			log.Fatalln(err)
@@ -24,13 +26,15 @@ var blobtos3 = &cobra.Command{
 			if err != nil {
 				log.Fatalln(err)
 			}
-			result := selective.BlobtoS3(parsedurl[0], data.Url)
+			result := selective.BlobtoS3(parsedurl[0], data.Url, buckname)
 			log.Println(fmt.Sprintf("Item Uploaded %v Time Elapsed: %v", result.Location, time.Since(start)))
 		}
-
+		log.Println(fmt.Sprintf("Task Completed %v", time.Since(globalstart)))
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(blobtos3)
+	blobtos3.Flags().StringVarP(&pathfile, "csvfile", "p", ".", "Use this parameter to set the the path to CSV file to upload")
+	blobtos3.Flags().StringVarP(&buckname, "bucketname", "b", "pruebas-devops-2022", "Use this parameter to set the bucket where upload the data")
 }
