@@ -77,3 +77,20 @@ func ParsingUrl(urls ...string) ([]string, error) {
 	}
 	return decodedurls, nil
 }
+
+func LocalStore(filename, evidencia string) {
+	resp, err := http.Get(evidencia)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	f, err := os.Create(filename)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
+	f.Write(data)
+}

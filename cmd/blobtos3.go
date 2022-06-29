@@ -10,6 +10,7 @@ import (
 
 var pathfile string
 var buckname string
+var local bool
 var blobtos3 = &cobra.Command{
 	Use:   "aztos3",
 	Short: "command to transmit data from blobstorage to s3 bucket",
@@ -26,6 +27,9 @@ var blobtos3 = &cobra.Command{
 			if err != nil {
 				log.Fatalln(err)
 			}
+			if local {
+				selective.LocalStore(parsedurl[0], data.Url)
+			}
 			result := selective.BlobtoS3(parsedurl[0], data.Url, buckname)
 			log.Println(fmt.Sprintf("Item Uploaded %v Time Elapsed: %v", result.Location, time.Since(start)))
 		}
@@ -37,4 +41,5 @@ func init() {
 	rootCmd.AddCommand(blobtos3)
 	blobtos3.Flags().StringVarP(&pathfile, "csvfile", "p", ".", "Use this parameter to set the the path to CSV file to upload")
 	blobtos3.Flags().StringVarP(&buckname, "bucketname", "b", "pruebas-devops-2022", "Use this parameter to set the bucket where upload the data")
+	blobtos3.Flags().BoolVarP(&local, "local", "l", false, "Enable this feature to store from blobstorage in local")
 }
