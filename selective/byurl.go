@@ -87,7 +87,12 @@ func LocalStore(filename, evidencia string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	f, err := os.Create(filename)
+	paths := strings.Split(filename, "/")
+	err = os.MkdirAll(strings.Join(paths[:len(paths)-1], "/"), 0755)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	f, err := os.Create(paths[len(paths)-1])
 	if err != nil {
 		log.Fatalln(err)
 	}

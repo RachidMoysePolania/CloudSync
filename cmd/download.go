@@ -109,7 +109,7 @@ func init() {
 	rootCmd.AddCommand(downloadCmd)
 	downloadCmd.Flags().StringVarP(&bucketname, "bucketname", "b", "", "The bucketname for copy recursive file")
 	downloadCmd.Flags().StringSliceVarP(&prefixfolder, "foldername", "f", nil, "The foler or folders for copy recursive file, comma separated for multiple folders")
-	downloadCmd.Flags().BoolVarP(&azdestination, "Azure", "a", true, "By default transmit all data to azure")
+	downloadCmd.Flags().BoolVarP(&azdestination, "Azure", "a", false, "By default transmit all data to azure")
 	downloadCmd.Flags().BoolVarP(&awsdestination, "AWS", "w", false, "transmit data to AWS")
 	downloadCmd.Flags().BoolVarP(&localdestination, "Local", "l", false, "Download data to local drive")
 	downloadCmd.Flags().StringVarP(&workingdirectory, "savepath", "s", ".", "Set the directory where you need to save the data")
