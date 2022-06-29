@@ -35,6 +35,7 @@ var blobtos3 = &cobra.Command{
 					log.Fatalln(err)
 				}
 				data := selective.LocalStore(data.Url)
+				log.Println(fmt.Sprintf("Downloaded file %v", filename[len(filename)-1]))
 				f, err := os.Create(strings.Join(filename[:len(filename)-1], "/") + "/" + filename[len(filename)-1])
 				if err != nil {
 					log.Fatalln(err)
