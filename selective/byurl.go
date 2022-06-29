@@ -78,7 +78,7 @@ func ParsingUrl(urls ...string) ([]string, error) {
 	return decodedurls, nil
 }
 
-func LocalStore(filename, evidencia string) {
+func LocalStore(evidencia string) []byte {
 	resp, err := http.Get(evidencia)
 	if err != nil {
 		log.Fatalln(err)
@@ -87,15 +87,5 @@ func LocalStore(filename, evidencia string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	paths := strings.Split(filename, "/")
-	err = os.MkdirAll(strings.Join(paths[:len(paths)-1], "/"), 0755)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	f, err := os.Create(paths[len(paths)-1])
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer f.Close()
-	f.Write(data)
+	return data
 }

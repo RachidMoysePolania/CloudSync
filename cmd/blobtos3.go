@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -21,14 +23,33 @@ var blobtos3 = &cobra.Command{
 		if err != nil {
 			log.Fatalln(err)
 		}
+		if local {
+			for _, data := range models {
+				destinourl, err := selective.ParsingUrl(data.Destino)
+				if err != nil {
+					log.Fatalln(err)
+				}
+				filename := strings.Split(destinourl[0], "/")
+				err = os.MkdirAll(strings.Join(filename[:len(filename)-1], "/"), 0755)
+				if err != nil {
+					log.Fatalln()
+				}
+				data := selective.LocalStore(data.Url)
+				f, err := os.Create(strings.Join(filename[:len(filename)-1], "/") + "/" + filename[len(filename)-1])
+				if err != nil {
+					log.Fatalln(err)
+				}
+				defer f.Close()
+				f.Write(data)
+			}
+			log.Println("Tarea completa")
+			os.Exit(1)
+		}
 		for _, data := range models {
 			start := time.Now()
 			parsedurl, err := selective.ParsingUrl(data.Destino)
 			if err != nil {
 				log.Fatalln(err)
-			}
-			if local {
-				selective.LocalStore(parsedurl[0], data.Url)
 			}
 			result := selective.BlobtoS3(parsedurl[0], data.Url, buckname)
 			log.Println(fmt.Sprintf("Item Uploaded %v Time Elapsed: %v", result.Location, time.Since(start)))
