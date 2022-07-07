@@ -1,6 +1,7 @@
 package recursive
 
 import (
+	"TerritoriumSync/helpers"
 	"context"
 	"errors"
 	"fmt"
@@ -11,12 +12,14 @@ import (
 	"log"
 )
 
+var _, errlog *log.Logger = helpers.Logger()
+
 func GetObjects(origin string, carpeta ...string) []string {
 	var allobjects []string
 	//load the shared AWS configuration in ~/.aws/config
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		log.Fatalln(err)
+		errlog.Fatalln(err)
 	}
 
 	//Creating a new S3 client
@@ -29,7 +32,7 @@ func GetObjects(origin string, carpeta ...string) []string {
 			Prefix: aws.String(fmt.Sprintf("%v", f)),
 		})
 		if err != nil {
-			log.Fatalln(err)
+			errlog.Fatalln(err)
 		}
 		for _, object := range output.Contents {
 			allobjects = append(allobjects, aws.ToString(object.Key))
@@ -43,7 +46,7 @@ func CopyFiles(bucket string, files ...string) ([]byte, error) {
 	//load the shared AWS configuration in ~/.aws/config
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		log.Fatalln(err)
+		errlog.Fatalln(err)
 	}
 	//Creating a new S3 client
 	client := s3.NewFromConfig(cfg)
